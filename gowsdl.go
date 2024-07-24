@@ -17,6 +17,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"sync"
 	"text/template"
@@ -288,6 +289,20 @@ func (g *GoWSDL) resolveXSDExternals(schema *XSDSchema, loc *Location) error {
 	return nil
 }
 
+func checkArray(maxOccur string) bool {
+	if maxOccur == "unbounded" {
+		return true
+	}
+	value, err := strconv.Atoi(maxOccur)
+	if err != nil {
+		return false
+	}
+
+	if value > 1 {
+		return true
+	}
+	return false
+}
 func (g *GoWSDL) genTypes() ([]byte, error) {
 	funcMap := template.FuncMap{
 		"toGoType":                 toGoType,
@@ -306,6 +321,7 @@ func (g *GoWSDL) genTypes() ([]byte, error) {
 		"setNS":                    g.setNS,
 		"setRefForComplexType":     g.setRefForComplexType,
 		"getNS":                    g.getNS,
+		"checkArray":               checkArray,
 	}
 
 	data := new(bytes.Buffer)

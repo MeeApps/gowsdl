@@ -85,7 +85,7 @@ var typesTmpl = `
 {{define "Elements"}}
 	{{range .}}
 		{{if ne .Ref ""}}
-			{{removeNS .Ref | replaceReservedWords  | makePublic}} {{if eq .MaxOccurs "unbounded"}}[]{{end}}{{toGoType .Ref .Nillable }} ` + "`" + `xml:"{{.Ref | setCurrentNS}},omitempty" json:"{{.Ref | removeNS}},omitempty"` + "`" + `
+			{{removeNS .Ref | replaceReservedWords  | makePublic}} {{if (.MaxOccurs | checkArray)}}[]{{end}}{{toGoType .Ref .Nillable }} ` + "`" + `xml:"{{.Ref | setCurrentNS}},omitempty" json:"{{.Ref | removeNS}},omitempty"` + "`" + `
 		{{else}}
 		{{if not .Type}}
 			{{if .SimpleType}}
@@ -100,7 +100,7 @@ var typesTmpl = `
 			{{end}}
 		{{else}}
 			{{if .Doc}}{{.Doc | comment}} {{end}}
-			{{replaceAttrReservedWords .Name | makeFieldPublic}} {{if eq .MaxOccurs "unbounded"}}[]{{end}}{{toGoType .Type .Nillable }} ` + "`" + `xml:"{{setRefForComplexType .Type .Name}},omitempty" json:"{{.Name}},omitempty"` + "`" + ` {{end}}
+			{{replaceAttrReservedWords .Name | makeFieldPublic}} {{if (.MaxOccurs | checkArray)}}[]{{end}}{{toGoType .Type .Nillable }} ` + "`" + `xml:"{{setRefForComplexType .Type .Name}},omitempty" json:"{{.Name}},omitempty"` + "`" + ` {{end}}
 		{{end}}
 	{{end}}
 {{end}}
